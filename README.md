@@ -40,7 +40,3 @@ Isso regenera os assets e produz novamente `game.iso` e `game.cue`.
 
 ## Teste rápido
 Abra `saturn_app/game.cue` em um emulador de Sega Saturn (ex.: Yabause/Kronos/Mednafen) ou grave a imagem para uso em hardware real.
-
-## Observações para publicar no GitHub
-- O arquivo `saturn_app/game.iso` tem cerca de 35 MB (dentro do limite padrão do GitHub para arquivo individual).
-- Se você quiser versionar múltiplas ISOs grandes no futuro, considere Git LFS.
