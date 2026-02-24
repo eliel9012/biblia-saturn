@@ -1,6 +1,6 @@
-# Bíblia ACF para Sega Saturn
+# Bíblia para Sega Saturn
 
-Projeto com build jogável da Bíblia ACF para Sega Saturn.
+Projeto com build jogável de Bíblia em português para Sega Saturn.
 
 ## Status
 - Build final pronta em `saturn_app/game.iso` e `saturn_app/game.cue`.
