@@ -4,7 +4,7 @@ Projeto com build jogável de Bíblia em português para Sega Saturn.
 
 ## Status
 - Build final pronta em `saturn_app/game.iso` e `saturn_app/game.cue`.
-- Screenshots prontos em `saturn_app/1.png`, `saturn_app/2.png`, `saturn_app/3.png`, `saturn_app/4.png`.
+- Screenshots prontos em `saturn_app/1.png`, `saturn_app/2.png`, `saturn_app/3.png`, `saturn_app/4.png` e `saturn_app/versiculo.png`.
 - Repositório organizado para publicação no GitHub.
 
 ## ROMs finais
@@ -18,6 +18,7 @@ Esses dois arquivos são a release final que deve ficar versionada no repositór
 ![Screenshot 2](saturn_app/2.png)
 ![Screenshot 3](saturn_app/3.png)
 ![Screenshot 4](saturn_app/4.png)
+![Versículo](saturn_app/versiculo.png)
 
 ## Estrutura principal
 - `saturn_app/`: código-fonte da aplicação Saturn e artefatos de build.
