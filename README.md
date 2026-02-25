@@ -16,19 +16,19 @@ Esses dois arquivos são a release final que deve ficar versionada no repositór
 ## Screenshots
 ![Screenshot 1](saturn_app/1.png)
 
-*Legenda: Menu de livros.*
+**Legenda:** Menu de livros.
 
 ![Screenshot 2](saturn_app/2.png)
 
-*Legenda: Seleção de capítulos.*
+**Legenda:** Seleção de capítulos.
 
 ![Screenshot 3](saturn_app/3.png)
 
-*Legenda: Tela de leitura.*
+**Legenda:** Tela de leitura.
 
 ![Screenshot 4](saturn_app/4.png)
 
-*Legenda: Variação do menu de capítulos.*
+**Legenda:** Variação do menu de capítulos.
 
 ## Estrutura principal
 - `saturn_app/`: código-fonte da aplicação Saturn e artefatos de build.
