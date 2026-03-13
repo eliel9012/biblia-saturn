@@ -1,5 +1,25 @@
 # Bíblia para Sega Saturn
 
+## Português
+
+Projeto com build jogável de Bíblia em português para Sega Saturn.
+
+Resumo rápido:
+
+- inclui `ISO` e `CUE` prontos
+- mantém screenshots e estrutura de build no repositório
+- pode ser recompilado no Linux com Python 3 e Jo Engine
+
+## English
+
+Playable Portuguese Bible build for the Sega Saturn.
+
+Quick summary:
+
+- includes ready-to-run `ISO` and `CUE` images
+- keeps screenshots and build structure in the repository
+- can be rebuilt on Linux with Python 3 and Jo Engine
+
 Projeto com build jogável de Bíblia em português para Sega Saturn.
 
 ## Status
