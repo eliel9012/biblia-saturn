@@ -1,73 +1,91 @@
 # Bíblia para Sega Saturn
 
-## Português
-
-Projeto com build jogável de Bíblia em português para Sega Saturn.
-
-Resumo rápido:
-
-- inclui `ISO` e `CUE` prontos
-- mantém screenshots e estrutura de build no repositório
-- pode ser recompilado no Linux com Python 3 e Jo Engine
-
 ## English
 
-Playable Portuguese Bible build for the Sega Saturn.
+Playable Portuguese Bible build for the Sega Saturn, with source, release images, and screenshots kept together in the repository.
 
-Quick summary:
+### Status
 
-- includes ready-to-run `ISO` and `CUE` images
-- keeps screenshots and build structure in the repository
-- can be rebuilt on Linux with Python 3 and Jo Engine
+- final build available in `saturn_app/game.iso` and `saturn_app/game.cue`
+- screenshots available in `saturn_app/1.png`, `saturn_app/2.png`, `saturn_app/3.png`, and `saturn_app/4.png`
+- repository organized for publication and optional rebuilds
 
-Projeto com build jogável de Bíblia em português para Sega Saturn.
+### Final ROM Images
 
-## Status
-- Build final pronta em `saturn_app/game.iso` e `saturn_app/game.cue`.
-- Screenshots prontos em `saturn_app/1.png`, `saturn_app/2.png`, `saturn_app/3.png`, `saturn_app/4.png`.
-- Repositório organizado para publicação no GitHub.
+- `saturn_app/game.cue`
+- `saturn_app/game.iso`
 
-## ROMs finais
-- `saturn_app/game.cue` (release oficial)
-- `saturn_app/game.iso` (release oficial)
+These are the official release files tracked in the project.
 
-Esses dois arquivos são a release final que deve ficar versionada no repositório.
+### Project Structure
 
-## Screenshots
-![Screenshot 1](saturn_app/1.png)
+- `saturn_app/`: Saturn app source and build artifacts
+- `saturn_app/cd/`: CD-side data files such as text, fonts, and assets
+- `tools/`: helper scripts for asset generation
+- `acf_clean.json`: Bible source text used during generation
 
-**Legenda:** Menu de livros.
+### Optional Rebuild
 
-![Screenshot 2](saturn_app/2.png)
+Requirements:
 
-**Legenda:** Seleção de capítulos.
-
-![Screenshot 3](saturn_app/3.png)
-
-**Legenda:** Tela de leitura.
-
-![Screenshot 4](saturn_app/4.png)
-
-**Legenda:** Variação do menu de capítulos.
-
-## Estrutura principal
-- `saturn_app/`: código-fonte da aplicação Saturn e artefatos de build.
-- `saturn_app/cd/`: arquivos de dados do CD (texto, fontes, assets).
-- `tools/`: scripts auxiliares para gerar assets.
-- `acf_clean.json`: base de texto bíblico usada na geração.
-
-## Requisitos para recompilar (opcional)
 - Linux
 - Python 3
-- Jo Engine instalado (o `makefile` atual aponta para `/home/pi/joengine`)
+- Jo Engine installed locally
 
-## Como recompilar a ROM (opcional)
+Build:
+
 ```bash
 cd saturn_app
 ./compile.sh
 ```
 
-Isso regenera os assets e produz novamente `game.iso` e `game.cue`.
+This regenerates the assets and rebuilds `game.iso` and `game.cue`.
 
-## Teste rápido
-Abra `saturn_app/game.cue` em um emulador de Sega Saturn (ex.: Yabause/Kronos/Mednafen) ou grave a imagem para uso em hardware real.
+### Quick Test
+
+Open `saturn_app/game.cue` in a Sega Saturn emulator such as Yabause, Kronos, or Mednafen, or use the image on real hardware.
+
+## Português
+
+Build jogável da Bíblia em português para Sega Saturn, com código-fonte, imagens finais e screenshots mantidos no mesmo repositório.
+
+### Status
+
+- build final disponível em `saturn_app/game.iso` e `saturn_app/game.cue`
+- screenshots disponíveis em `saturn_app/1.png`, `saturn_app/2.png`, `saturn_app/3.png` e `saturn_app/4.png`
+- repositório organizado para publicação e recompilação opcional
+
+### Imagens Finais da ROM
+
+- `saturn_app/game.cue`
+- `saturn_app/game.iso`
+
+Esses são os arquivos oficiais de release do projeto.
+
+### Estrutura do Projeto
+
+- `saturn_app/`: código-fonte da aplicação Saturn e artefatos de build
+- `saturn_app/cd/`: arquivos de dados do CD, como texto, fontes e assets
+- `tools/`: scripts auxiliares para geração de assets
+- `acf_clean.json`: texto-base da Bíblia usado na geração
+
+### Recompilação Opcional
+
+Requisitos:
+
+- Linux
+- Python 3
+- Jo Engine instalado localmente
+
+Build:
+
+```bash
+cd saturn_app
+./compile.sh
+```
+
+Isso regenera os assets e recompila `game.iso` e `game.cue`.
+
+### Teste Rápido
+
+Abra `saturn_app/game.cue` em um emulador de Sega Saturn como Yabause, Kronos ou Mednafen, ou use a imagem em hardware real.
