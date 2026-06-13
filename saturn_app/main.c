@@ -57,10 +57,22 @@ typedef enum
 #define BIBLE_EXPECTED_CHAPTER_COUNT (1189)
 #define BIBLE_IDX_MAX_SIZE (160 * 1024)
 
-#define READ_MAX_COLS (40)
+#define READ_TEXT_X (2)
+#define READ_PANEL_X_PX (12)
+#define READ_PANEL_Y_PX (8)
+#define READ_PANEL_W_PX (296)
+#define READ_PANEL_H_PX (192)
+#define READ_HUD_PANEL_Y_PX (208)
+#define READ_HUD_PANEL_H_PX (32)
+#define MAIN_PANEL_X_PX (8)
+#define MAIN_PANEL_Y_PX (16)
+#define MAIN_PANEL_W_PX (304)
+#define MAIN_PANEL_H_PX (128)
+#define READ_MAX_COLS (36)
 #define READ_MAX_LINES (1024)
-#define READ_VISIBLE_LINES (24)
-#define READ_TOP_Y (1)
+#define READ_VISIBLE_LINES (22)
+#define READ_TOP_Y (2)
+#define READ_HUD_Y (26)
 
 #define REPEAT_DELAY_MENU (18)       /* frames */
 #define REPEAT_INTERVAL_MENU (10)    /* frames */
@@ -506,7 +518,7 @@ static void read_lines_add_wrapped_verse(int verse_num, const char *verse_text)
 {
 	char prefix[8];
 	const int prefix_len = sprintf(prefix, "%d ", verse_num);
-	const int indent = (prefix_len < READ_MAX_COLS) ? prefix_len : READ_MAX_COLS;
+	const int indent = (prefix_len < READ_MAX_COLS) ? prefix_len : (READ_MAX_COLS - 1);
 	int pos = 0;
 	bool first = true;
 
@@ -534,6 +546,13 @@ static void read_lines_add_wrapped_verse(int verse_num, const char *verse_text)
 		}
 
 		remaining = READ_MAX_COLS - col;
+		if (remaining <= 0)
+		{
+			line[READ_MAX_COLS] = '\0';
+			read_lines_add(line);
+			first = false;
+			break;
+		}
 		end = pos;
 		for (j = 0; verse_text[end] != '\0' && j < remaining; ++j, ++end)
 		{
@@ -617,6 +636,7 @@ static void bible_load_current_chapter_lines(void)
 	unsigned int verse_off;
 	unsigned int next_off;
 	unsigned int len;
+	unsigned int file_pos;
 	unsigned short chapter_count;
 	unsigned short verse_count;
 	int v;
@@ -659,9 +679,13 @@ static void bible_load_current_chapter_lines(void)
 		read_lines_add("Seek falhou");
 		return;
 	}
+	file_pos = verse_off;
 
 	for (v = 0; v < (int)verse_count; ++v)
 	{
+		unsigned int want;
+		int got;
+
 		verse_idx = verse_first + (unsigned int)v;
 		verse_off = bible_get_verse_offset(verse_idx);
 		if ((verse_idx + 1) < g_bible_verse_count)
@@ -669,21 +693,47 @@ static void bible_load_current_chapter_lines(void)
 		else
 			next_off = g_bible_text_size;
 
-		if (next_off <= verse_off)
+		if (next_off <= verse_off || next_off > g_bible_text_size)
 			continue;
+		if (verse_off < file_pos)
+		{
+			read_lines_add("Indice de CD regressivo");
+			break;
+		}
+		if (verse_off > file_pos)
+		{
+			const unsigned int skip = verse_off - file_pos;
+			if (!jo_fs_seek_forward(&file, skip))
+			{
+				read_lines_add("Seek de versiculo falhou");
+				break;
+			}
+			file_pos = verse_off;
+		}
 		len = next_off - verse_off;
 
-		if (len >= (sizeof(verse_buf) - 1))
+		want = len;
+		if (want >= (sizeof(verse_buf) - 1))
+			want = (unsigned int)(sizeof(verse_buf) - 1);
+
+		got = jo_fs_read_next_bytes(&file, verse_buf, want);
+		if (got <= 0)
 		{
-			const unsigned int keep = (unsigned int)(sizeof(verse_buf) - 1);
-			jo_fs_read_next_bytes(&file, verse_buf, keep);
-			verse_buf[keep] = '\0';
-			jo_fs_seek_forward(&file, len - keep);
+			read_lines_add("Leitura interrompida");
+			break;
 		}
-		else
+		verse_buf[got] = '\0';
+		file_pos += (unsigned int)got;
+
+		if ((unsigned int)got < len)
 		{
-			const int r = jo_fs_read_next_bytes(&file, verse_buf, len);
-			verse_buf[(r < 0) ? 0 : r] = '\0';
+			const unsigned int skip_tail = len - (unsigned int)got;
+			if (!jo_fs_seek_forward(&file, skip_tail))
+			{
+				read_lines_add("Skip de versiculo falhou");
+				break;
+			}
+			file_pos += skip_tail;
 		}
 
 		read_lines_add_wrapped_verse(v + 1, verse_buf);
@@ -753,7 +803,7 @@ static void enter_reading(void)
 {
 	g_screen = SCREEN_READING;
 	/* Keep the book background (set in chapter menu) for context. */
-	jo_set_screen_color_filter_a(JO_NBG1_SCREEN, -64, -64, -64);
+	jo_set_screen_color_filter_a(JO_NBG1_SCREEN, -96, -96, -96);
 	bible_load_current_chapter_lines();
 	g_needs_redraw = true;
 }
@@ -944,13 +994,22 @@ static void handle_input(void)
 
 static void draw_main_menu(void)
 {
-	UI_PRINTF(2, 2, "BIBLIA ACF - Saturn (prot)");
+	UI_PRINTF(2, 2, "BIBLIA ACF - Sega Saturn");
 	UI_PRINTF(2, 4, "A/START: menu de livros");
-	UI_PRINTF(2, 6, "Objetivo: alternar 2 fundos");
-	UI_PRINTF(2, 8, "Abra/feche o menu p/ testar");
+	UI_PRINTF(2, 6, "Leitura PT-BR em 320x240");
+	UI_PRINTF(2, 8, "Texto otimizado p/ CRT");
 	UI_PRINTF(2, 11, "Teste: Acentos PT-BR (Latin-1)");
 	UI_PRINTF(2, 13, "\xC0\xC1\xC3\xC7\xC9\xCA\xD3\xD4\xDA");
 	UI_PRINTF(2, 14, "\xE0\xE1\xE2\xE3\xE7\xE9\xEA\xED\xF2\xF3\xF4\xF5\xFA\xFC \xAB \xB3");
+}
+
+static void draw_main_menu_panel(void)
+{
+	if (g_ui_card_sprite < 0)
+		return;
+
+	ui_draw_card_quad(g_ui_card_sprite, MAIN_PANEL_X_PX, MAIN_PANEL_Y_PX,
+			  MAIN_PANEL_W_PX, MAIN_PANEL_H_PX, 0);
 }
 
 static void draw_book_menu(void)
@@ -1078,39 +1137,54 @@ static void draw_chapter_menu_cards(void)
 	}
 }
 
+static void draw_reading_panels(void)
+{
+	if (g_ui_card_sprite < 0)
+		return;
+
+	ui_draw_card_quad(g_ui_card_sprite, READ_PANEL_X_PX, READ_PANEL_Y_PX,
+			  READ_PANEL_W_PX, READ_PANEL_H_PX, 0);
+	ui_draw_card_quad(g_ui_card_sprite, READ_PANEL_X_PX, READ_HUD_PANEL_Y_PX,
+			  READ_PANEL_W_PX, READ_HUD_PANEL_H_PX, 0);
+}
+
 static void draw_reading(void)
 {
 	int i;
 	int y;
 	unsigned short chapter_count;
 	int chap;
-	const int hud_y = 26;
 
 	if (!g_bible_loaded)
 	{
-		UI_PRINTF(0, 0, "BIBLE.IDX nao carregada");
-		UI_PRINTF(0, 2, "B: voltar");
+		UI_PRINTF(READ_TEXT_X, READ_TOP_Y, "BIBLE.IDX nao carregada");
+		UI_PRINTF(READ_TEXT_X, READ_TOP_Y + 2, "B: voltar");
 		return;
 	}
 
 	chapter_count = bible_get_book_chapter_count(g_book_selected);
 	chap = g_chapter_selected + 1;
 
-	UI_PRINTF(0, hud_y + 0, "%s  Cap %d/%d", kBookNames[g_book_selected], chap, (int)chapter_count);
-	UI_PRINTF(0, hud_y + 1, "A/B/START: capitulos  L/R: cap  UP/DOWN: rolar  X/Y: pag");
+	UI_PRINTF(READ_TEXT_X, READ_HUD_Y + 0, "%s  Cap %d/%d", kBookNames[g_book_selected], chap,
+		  (int)chapter_count);
+	UI_PRINTF(READ_TEXT_X, READ_HUD_Y + 1, "B: caps  L/R: cap  UP/DOWN: rolar");
 
 	for (i = 0, y = READ_TOP_Y; i < READ_VISIBLE_LINES; ++i, ++y)
 	{
 		const int idx = g_read_scroll + i;
 		if (idx >= g_read_line_count)
 			break;
-		jo_nbg2_printf(0, y, "%s", g_read_lines[idx]);
+		jo_nbg2_printf(READ_TEXT_X, y, "%s", g_read_lines[idx]);
 	}
 
 	if (g_read_line_count > 0)
-		UI_PRINTF(0, hud_y + 2, "Linha %d/%d", g_read_scroll + 1, g_read_line_count);
+	{
+		const int last_line = JO_MIN(g_read_scroll + READ_VISIBLE_LINES, g_read_line_count);
+		UI_PRINTF(READ_TEXT_X, READ_HUD_Y + 2, "Linhas %d-%d/%d  X/Y: pagina",
+			  g_read_scroll + 1, last_line, g_read_line_count);
+	}
 	else
-		UI_PRINTF(0, hud_y + 2, "Linha 0/0");
+		UI_PRINTF(READ_TEXT_X, READ_HUD_Y + 2, "Linha 0/0");
 }
 
 static void my_draw(void)
@@ -1118,10 +1192,14 @@ static void my_draw(void)
 	handle_input();
 
 	/* Sprites must be drawn every frame (VDP1 command list). */
-	if (g_screen == SCREEN_BOOK_MENU)
+	if (g_screen == SCREEN_MAIN_MENU)
+		draw_main_menu_panel();
+	else if (g_screen == SCREEN_BOOK_MENU)
 		draw_book_menu_cards();
 	else if (g_screen == SCREEN_CHAPTER_MENU)
 		draw_chapter_menu_cards();
+	else if (g_screen == SCREEN_READING)
+		draw_reading_panels();
 
 	if (!g_needs_redraw)
 		return;

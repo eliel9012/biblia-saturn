@@ -125,9 +125,9 @@ def main() -> int:
     )
     ap.add_argument(
         "--bold-mode",
-        choices=("right", "4n"),
-        default="right",
-        help="Dilation mode. 'right' is a mild embolden. '4n' is heavier.",
+        choices=("right", "right-down", "4n"),
+        default="right-down",
+        help="Dilation mode. 'right-down' is a readable Saturn/CRT embolden. '4n' is heavier.",
     )
     ap.add_argument(
         "--shadow",
@@ -185,6 +185,8 @@ def main() -> int:
                     continue
                 if args.bold_mode == "right":
                     dirs = ((1, 0),)
+                elif args.bold_mode == "right-down":
+                    dirs = ((1, 0), (0, 1))
                 else:
                     dirs = ((1, 0), (-1, 0), (0, 1), (0, -1))
                 for dx, dy in dirs:
